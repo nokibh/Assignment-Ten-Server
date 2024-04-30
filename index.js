@@ -44,7 +44,32 @@ async function run() {
         .toArray();
       res.send(result);
     });
-    delete oparetion;
+
+    app.put('/country/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedSpot = req.body;
+      const spot = {
+        $set: {
+          name: updatedSpot.name,
+          photo: updatedSpot.photo,
+          country: updatedSpot.country,
+          location: updatedSpot.location,
+          visitor: updatedSpot.visitor,
+          price: updatedSpot.price,
+          travel: updatedSpot.travel,
+          session: updatedSpot.session,
+
+          description: updatedSpot.description,
+
+          spot: updatedSpot.spot,
+        },
+      };
+      const result = await addCollection.updateOne(filter, spot, options);
+      res.send(result);
+    });
+    // delete oparetion;
     app.delete('/mylist/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
