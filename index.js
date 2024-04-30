@@ -44,10 +44,18 @@ async function run() {
         .toArray();
       res.send(result);
     });
+    delete oparetion;
     app.delete('/mylist/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await addCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    app.get('/country/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await addCollection.findOne(query);
       res.send(result);
     });
     // Send a ping to confirm a successful connection
