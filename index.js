@@ -30,6 +30,13 @@ async function run() {
       const result = await addCollection.insertOne(addAll);
       res.send(result);
     });
+    // country
+    app.get('/country', async (req, res) => {
+      const cursor = addCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    // My list
     app.get('/mylist/:email', async (req, res) => {
       console.log(req.params.email);
       const result = await addCollection
