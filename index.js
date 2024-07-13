@@ -5,7 +5,11 @@ require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 // middle ware
-app.use(cors());
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'https://assignment-10-fd8f9.web.app'],
+  })
+);
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.q0w7vnk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -22,6 +26,11 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const addCollection = client.db('touristDB').collection('touristSpot');
+    const spotCollection = client.db('touristDB').collection('SpotsByCountry');
+    const countryCollection = client
+      .db('touristDB')
+      .collection('allTourCountries');
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     app.post('/spots', async (req, res) => {
@@ -31,9 +40,21 @@ async function run() {
       res.send(result);
     });
     // country
-    app.get('/country', async (req, res) => {
-      const cursor = addCollection.find();
+
+    app.get('/allTourCountries', async (req, res) => {
+      const cursor = countryCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get('/allTouristsSpot', async (req, res) => {
+      const cursor = countryCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get('/getSpotsByCountry/:country', async (req, res) => {
+      const Country = req.params.country;
+      const query = { country_Name: Country };
+      const result = await spotCollection.find(query).toArray();
       res.send(result);
     });
     // My list
@@ -77,10 +98,10 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/country/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await addCollection.findOne(query);
+    app.get('/allTouristsSpot/:id', async (req, res) => {
+      const Id = req.params.id;
+      const query = { _id: new ObjectId(Id) };
+      const result = await countryCollection.findOne(query);
       res.send(result);
     });
     // Send a ping to confirm a successful connection
